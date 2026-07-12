@@ -55,7 +55,7 @@ func init() {
 
 	// CORS Setup
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"}, // Allow localhost for dev
+		AllowOriginFunc:  func(origin string) bool { return true }, // Allow all origins dynamically
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
