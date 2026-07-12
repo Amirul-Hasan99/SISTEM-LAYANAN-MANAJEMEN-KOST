@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/golang-jwt/jwt/v5"
-	"kosthub/config"
+	"kosthub/backend/config"
 )
 
 type JWTPayload struct {

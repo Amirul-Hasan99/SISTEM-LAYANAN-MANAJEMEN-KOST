@@ -60,22 +60,6 @@ func SeedDB() {
 		log.Fatalf("Failed to insert user 1 profile: %v", err)
 	}
 
-	// Insert User 2
-	var user2ID string
-	err = DB.QueryRow(context.Background(), `
-		INSERT INTO users (email, password, role, is_active) 
-		VALUES ('tenant2@kosthub.com', $1, 'USER', true) RETURNING id`, string(hashedPassword)).Scan(&user2ID)
-	if err != nil {
-		log.Fatalf("Failed to insert user 2: %v", err)
-	}
-
-	_, err = DB.Exec(context.Background(), `
-		INSERT INTO profiles (user_id, full_name, phone, emergency_contact, emergency_phone) 
-		VALUES ($1, 'Nawa Bakir', '081234567892', 'Siti (Ibu)', '081234567801')`, user2ID)
-	if err != nil {
-		log.Fatalf("Failed to insert user 2 profile: %v", err)
-	}
-
 	// Insert Room Categories
 	var standardCatID, deluxeCatID string
 	DB.QueryRow(context.Background(), `INSERT INTO room_categories (name, description) VALUES ('Standard', 'Kamar standar dengan fasilitas dasar') RETURNING id`).Scan(&standardCatID)
@@ -91,7 +75,7 @@ func SeedDB() {
 	// Insert Rooms
 	var room1ID, room2ID, room3ID, room4ID, room5ID string
 	DB.QueryRow(context.Background(), `INSERT INTO rooms (number, floor, category_id, price, capacity, status, description) VALUES ('101', 1, $1, 800000, 1, 'OCCUPIED', 'Kamar standar lantai 1') RETURNING id`, standardCatID).Scan(&room1ID)
-	DB.QueryRow(context.Background(), `INSERT INTO rooms (number, floor, category_id, price, capacity, status, description) VALUES ('102', 1, $1, 800000, 1, 'OCCUPIED', 'Kamar standar lantai 1') RETURNING id`, standardCatID).Scan(&room2ID)
+	DB.QueryRow(context.Background(), `INSERT INTO rooms (number, floor, category_id, price, capacity, status, description) VALUES ('102', 1, $1, 800000, 1, 'AVAILABLE', 'Kamar standar lantai 1') RETURNING id`, standardCatID).Scan(&room2ID)
 	DB.QueryRow(context.Background(), `INSERT INTO rooms (number, floor, category_id, price, capacity, status, description) VALUES ('201', 2, $1, 1200000, 2, 'AVAILABLE', 'Kamar deluxe lantai 2') RETURNING id`, deluxeCatID).Scan(&room3ID)
 	DB.QueryRow(context.Background(), `INSERT INTO rooms (number, floor, category_id, price, capacity, status, description) VALUES ('202', 2, $1, 1200000, 2, 'AVAILABLE', 'Kamar deluxe lantai 2') RETURNING id`, deluxeCatID).Scan(&room4ID)
 	DB.QueryRow(context.Background(), `INSERT INTO rooms (number, floor, category_id, price, capacity, status, description) VALUES ('103', 1, $1, 850000, 1, 'MAINTENANCE', 'Sedang renovasi') RETURNING id`, standardCatID).Scan(&room5ID)
@@ -103,13 +87,11 @@ func SeedDB() {
 	DB.Exec(context.Background(), `INSERT INTO room_facilities (room_id, facility_id) VALUES ($1, $2)`, room3ID, facilityIDs[1]) // WiFi
 
 	// Insert Tenants
-	var tenant1ID, tenant2ID string
+	var tenant1ID string
 	DB.QueryRow(context.Background(), `INSERT INTO tenants (user_id, room_id, status, start_date) VALUES ($1, $2, 'ACTIVE', '2025-01-15') RETURNING id`, user1ID, room1ID).Scan(&tenant1ID)
-	DB.QueryRow(context.Background(), `INSERT INTO tenants (user_id, room_id, status, start_date) VALUES ($1, $2, 'ACTIVE', '2025-03-01') RETURNING id`, user2ID, room2ID).Scan(&tenant2ID)
 
 	// Insert Leases
 	DB.Exec(context.Background(), `INSERT INTO leases (room_id, tenant_id, start_date, end_date, monthly_price) VALUES ($1, $2, '2025-01-15', '2026-01-15', 800000)`, room1ID, tenant1ID)
-	DB.Exec(context.Background(), `INSERT INTO leases (room_id, tenant_id, start_date, end_date, monthly_price) VALUES ($1, $2, '2025-03-01', '2026-03-01', 800000)`, room2ID, tenant2ID)
 
 	// Insert Payments
 	for month := 1; month <= 6; month++ {

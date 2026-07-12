@@ -3,10 +3,10 @@ cd /d "%~dp0"
 echo Starting KostHub Backend and Frontend locally...
 
 echo Starting Backend...
-start "Backend" cmd /k "npm run dev:backend"
+start "KostHub Backend" cmd /k "go run main.go"
 
 echo Starting Frontend...
-start "Frontend" cmd /k "npm run dev:frontend"
+start "KostHub Frontend" cmd /k "cd frontend && npm run dev"
 
 echo Both servers are starting in separate windows.
 pause

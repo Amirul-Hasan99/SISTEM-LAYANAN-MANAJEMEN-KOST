@@ -21,8 +21,8 @@ func LoadConfig() Config {
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		// Use the provided Supabase URI as fallback
-		dbURL = "postgresql://postgres:,bZ!.K.HP2CkR%Y@db.zmnuvzmexbnmbyxvvheq.supabase.co:5432/postgres"
+		// Use the provided Supabase URI as fallback, with % encoded as %25
+		dbURL = "postgresql://postgres:,bZ!.K.HP2CkR%25Y@db.zmnuvzmexbnmbyxvvheq.supabase.co:5432/postgres"
 	}
 
 	jwtSecret := os.Getenv("JWT_SECRET")

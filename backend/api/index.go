@@ -3,10 +3,10 @@ package api
 import (
 	"net/http"
 
-	"kosthub/config"
-	"kosthub/database"
-	"kosthub/handlers"
-	"kosthub/middleware"
+	"kosthub/backend/config"
+	"kosthub/backend/database"
+	"kosthub/backend/handlers"
+	"kosthub/backend/middleware"
 
 	"github.com/rs/cors"
 )
@@ -55,7 +55,7 @@ func init() {
 
 	// CORS Setup
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"}, // Adjust this in production
+		AllowedOrigins:   []string{"http://localhost:3000"}, // Allow localhost for dev
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,

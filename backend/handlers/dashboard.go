@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"kosthub/database"
-	"kosthub/helpers"
-	"kosthub/middleware"
+	"kosthub/backend/database"
+	"kosthub/backend/helpers"
+	"kosthub/backend/middleware"
 )
 
 func DashboardHandler(w http.ResponseWriter, r *http.Request) {

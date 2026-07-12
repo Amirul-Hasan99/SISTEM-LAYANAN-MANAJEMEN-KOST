@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"kosthub/database"
-	"kosthub/helpers"
-	"kosthub/middleware"
+	"kosthub/backend/database"
+	"kosthub/backend/helpers"
+	"kosthub/backend/middleware"
 )
 
 // A simplified generic handler for list endpoints needed by frontend
