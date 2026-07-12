@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { AppPage, UserSession } from "@/types";
+import { clearAuthToken } from "@/lib/api";
 
 interface AppState {
   // State
@@ -16,8 +17,6 @@ interface AppState {
   logout: () => void;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-
 const INITIAL_STATE = {
   currentPage: "landing" as AppPage,
   user: null,
@@ -32,5 +31,8 @@ export const useAppStore = create<AppState>((set) => ({
   setUser: (user) => set({ user, isLoading: false }),
   setLoading: (isLoading) => set({ isLoading }),
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
-  logout: () => set({ user: null, currentPage: "landing" }),
+  logout: () => {
+    clearAuthToken();
+    set({ user: null, currentPage: "landing" });
+  },
 }));

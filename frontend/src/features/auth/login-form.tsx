@@ -20,6 +20,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAppStore } from "@/lib/store";
+import { apiUrl, normalizeUserSession, setAuthToken } from "@/lib/api";
 import type { UserSession } from "@/types";
 
 const loginSchema = z.object({
@@ -47,11 +48,9 @@ export function LoginForm() {
   async function onSubmit(data: LoginValues) {
     setIsSubmitting(true);
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const res = await fetch(`${API_URL}/api/auth/login`, {
+      const res = await fetch(apiUrl("/api/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(data),
       });
 
@@ -62,13 +61,8 @@ export function LoginForm() {
         return;
       }
 
-      const user: UserSession = {
-        userId: json.data.user.userId,
-        email: json.data.user.email,
-        role: json.data.user.role,
-        name: json.data.user.name,
-        avatar: json.data.user.avatar,
-      };
+      setAuthToken(json.data.token);
+      const user: UserSession = normalizeUserSession(json.data.user);
 
       setUser(user);
 

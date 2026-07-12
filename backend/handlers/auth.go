@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"kosthub/backend/database"
 	"kosthub/backend/helpers"
@@ -12,6 +13,10 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 )
+
+func frontendRole(role string) string {
+	return strings.ToLower(role)
+}
 
 type LoginRequest struct {
 	Email    string `json:"email"`
@@ -64,9 +69,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		"token": token,
 		"user": map[string]interface{}{
 			"id":       user.ID,
+			"userId":   user.ID,
 			"email":    user.Email,
-			"role":     user.Role,
+			"role":     frontendRole(user.Role),
 			"fullName": profile.Name,
+			"name":     profile.Name,
 			"avatar":   profile.Avatar,
 		},
 	}, http.StatusOK)
@@ -108,7 +115,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	err := database.DB.QueryRow(context.Background(), `
 		INSERT INTO users (email, password, role) 
 		VALUES ($1, $2, 'USER') RETURNING id`, req.Email, string(hashedPassword)).Scan(&userID)
-	
+
 	if err != nil {
 		helpers.ErrorResponse(w, "Failed to create user", http.StatusInternalServerError)
 		return
@@ -124,9 +131,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		"token": token,
 		"user": map[string]interface{}{
 			"id":       userID,
+			"userId":   userID,
 			"email":    req.Email,
-			"role":     "USER",
+			"role":     "user",
 			"fullName": req.FullName,
+			"name":     req.FullName,
 		},
 	}, http.StatusCreated)
 }
@@ -136,7 +145,7 @@ func MeHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-	
+
 	claims, ok := r.Context().Value(middleware.UserContextKey).(*helpers.JWTPayload)
 	if !ok {
 		helpers.ErrorResponse(w, "Unauthorized", http.StatusUnauthorized)
@@ -157,9 +166,9 @@ func MeHandler(w http.ResponseWriter, r *http.Request) {
 		LEFT JOIN tenants t ON u.id = t.user_id AND t.status = 'ACTIVE'
 		LEFT JOIN rooms r ON t.room_id = r.id
 		WHERE u.id = $1`, claims.UserID).
-		Scan(&user.ID, &user.Email, &user.Role, &user.Active, 
-			 &profile.Name, &profile.Phone, &profile.Avatar, &profile.EmergencyName, &profile.EmergencyPhone,
-			 &roomID, &roomNumber, &floor)
+		Scan(&user.ID, &user.Email, &user.Role, &user.Active,
+			&profile.Name, &profile.Phone, &profile.Avatar, &profile.EmergencyName, &profile.EmergencyPhone,
+			&roomID, &roomNumber, &floor)
 
 	if err != nil {
 		helpers.ErrorResponse(w, "User tidak ditemukan", http.StatusNotFound)
@@ -167,11 +176,13 @@ func MeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := map[string]interface{}{
+		"userId":           user.ID,
 		"id":               user.ID,
 		"email":            user.Email,
-		"role":             user.Role,
+		"role":             frontendRole(user.Role),
 		"isActive":         user.Active,
 		"fullName":         profile.Name,
+		"name":             profile.Name,
 		"phone":            profile.Phone,
 		"avatar":           profile.Avatar,
 		"emergencyContact": profile.EmergencyName,

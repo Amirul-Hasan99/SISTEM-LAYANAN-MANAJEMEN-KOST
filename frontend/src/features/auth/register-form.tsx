@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAppStore } from "@/lib/store";
+import { apiUrl } from "@/lib/api";
 
 const registerSchema = z
   .object({
@@ -74,12 +75,11 @@ export function RegisterForm() {
   async function onSubmit(data: RegisterValues) {
     setIsSubmitting(true);
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const res = await fetch(`${API_URL}/api/auth/register`, {
+      const res = await fetch(apiUrl("/api/auth/register"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: data.name,
+          fullName: data.name,
           email: data.email,
           password: data.password,
           phone: data.phone || undefined,

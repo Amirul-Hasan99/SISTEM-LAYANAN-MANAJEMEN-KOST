@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
+import { apiFetch, getAuthToken, normalizeUserSession } from "@/lib/api";
 import { LandingPage } from "@/features/auth/landing-page";
 import { LoginForm } from "@/features/auth/login-form";
 import { RegisterForm } from "@/features/auth/register-form";
@@ -25,8 +26,6 @@ import UserAnnouncements from "@/features/user/announcements";
 import UserNotifications from "@/features/user/notifications";
 import UserProfile from "@/features/user/profile";
 import type { AppPage } from "@/types";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const PAGE_TRANSITION = {
   initial: { opacity: 0, y: 6 },
@@ -95,11 +94,16 @@ export default function Home() {
   // Restore session on mount
   useEffect(() => {
     async function restoreSession() {
+      if (!getAuthToken()) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        const res = await fetch(`${API_URL}/api/auth/me`);
+        const res = await apiFetch("/api/auth/me");
         const json = await res.json();
         if (json.success && json.data) {
-          setUser(json.data);
+          setUser(normalizeUserSession(json.data));
         } else {
           setLoading(false);
         }

@@ -35,7 +35,7 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 func AdminMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return AuthMiddleware(func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(UserContextKey).(*helpers.JWTPayload)
-		if !ok || claims.Role != "ADMIN" {
+		if !ok || strings.ToUpper(claims.Role) != "ADMIN" {
 			helpers.ErrorResponse(w, "Forbidden", http.StatusForbidden)
 			return
 		}
