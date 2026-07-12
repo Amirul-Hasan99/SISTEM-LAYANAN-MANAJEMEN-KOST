@@ -30,8 +30,9 @@ git remote set-url origin https://github.com/Amirul-Hasan99/SISTEM-LAYANAN-MANAJ
 echo.
 echo Pushing to GitHub...
 git branch -M main
+echo Pulling changes from remote to synchronize...
+git pull origin main --allow-unrelated-histories --no-edit 2>nul
 git push -u origin main
-
 echo.
 echo Done!
 pause
