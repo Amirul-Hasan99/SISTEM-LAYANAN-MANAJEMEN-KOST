@@ -1,0 +1,17 @@
+{
+  "name": "kosthub",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm --workspace frontend run dev",
+    "build:frontend": "npm --workspace frontend run build",
+    "lint": "npm --workspace frontend run lint"
+  },
+  "devDependencies": {
+    "@types/node": "^22.1.0",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 32" fill="none">
+  <path d="M14 4L2 14h4v12h6v-8h4v8h6V14h4L14 4z" fill="currentColor" opacity="0.9"/>
+  <rect x="10" y="17" width="3" height="4" rx="0.5" fill="var(--logo-accent, #059669)" opacity="0.7"/>
+  <rect x="15" y="17" width="3" height="4" rx="0.5" fill="var(--logo-accent, #059669)" opacity="0.7"/>
+  <text x="30" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="700" fill="currentColor" letter-spacing="-0.02em">Kost</text>
+  <text x="68" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="700" fill="var(--logo-accent, #059669)" letter-spacing="-0.02em">Hub</text>
+</svg>
